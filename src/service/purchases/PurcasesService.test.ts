@@ -1,18 +1,18 @@
 import chai from "chai";
 import sinon, { SinonStubbedInstance } from "sinon";
-import DAO from "../../dao/pets/PetsDAO";
+import DAO from "../../dao/purchases/PurchasesDAO";
 import { v4 as uuidv4 } from 'uuid';
 
 // file under test
-import Service from "./PetsService";
-import PetsDAO from "../../dao/pets/PetsDAO";
+import Service from "./PurchasesService";
+import PurchasesDAO from "../../dao/purchases/PurchasesDAO";
 
 const { expect } = chai;
 const sandbox = sinon.createSandbox();
 
-describe("src :: service :: pets :: PetsService", () => {
+describe("src :: service :: purchases :: PurchasesService", () => {
   // test double variables (stubs))
-  let dao: SinonStubbedInstance<PetsDAO>;
+  let dao: SinonStubbedInstance<PurchasesDAO>;
 
   let service: Service;
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe("src :: service :: pets :: PetsService", () => {
     dao.truncate = sandbox.stub();
     dao.deleteById = sandbox.stub();
     dao.patchAndFetchById = sandbox.stub();
-    dao.findByOwnerId = sandbox.stub();
+    dao.findByCustomerId = sandbox.stub();
 
     service = new Service(dao);
   });
@@ -33,15 +33,16 @@ describe("src :: service :: pets :: PetsService", () => {
     sandbox.restore();
     sandbox.reset();
   });
-  describe("# findByOwnerId", () => {
+  
+  describe("# findByCustomerId", () => {
     it("calls DAOs query method", async () => {
       // arrange
       const id = uuidv4();
-      dao.findByOwnerId.resolves([]);
+      dao.findByCustomerId.resolves([]);
       // act
-      const result = await service.findByOwnerId(id);
+      const result = await service.findByCustomerId(id);
       // assert
-      sandbox.assert.calledOnce(dao.findByOwnerId);
+      sandbox.assert.calledOnce(dao.findByCustomerId);
       expect(result).to.deep.equal([]);
     });
   });

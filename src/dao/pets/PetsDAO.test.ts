@@ -12,7 +12,7 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
-  findPetsByOwnerId: SinonStub<any, Methods>;
+  findByOwnerId: SinonStub<any, Methods>;
 }
 
 describe("src :: dao :: pets :: PetsDAO", () => {
@@ -23,7 +23,7 @@ describe("src :: dao :: pets :: PetsDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
-      findPetsByOwnerId: sandbox.stub(),
+      findByOwnerId: sandbox.stub(),
     };
 
     dao = new DAO(methods as any);
@@ -33,15 +33,15 @@ describe("src :: dao :: pets :: PetsDAO", () => {
     sandbox.reset();
   });
   
-  describe("# findPetsByOwnerId", () => {
+  describe("# findByOwnerId", () => {
     it("returns an instance array", async () => {
       // arrange
       const id = uuidv4();
       methods.query.returnsThis();
-      methods.findPetsByOwnerId.returnsThis();
+      methods.findByOwnerId.returnsThis();
       methods.where.resolves([{ customerId: id }]);
       // act
-      const result = await dao.findPetsByOwnerId(id);
+      const result = await dao.findByOwnerId(id);
       // assert
       sandbox.assert.calledOnce(methods.where);
       sandbox.assert.calledOnce(methods.query);

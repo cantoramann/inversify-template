@@ -13,7 +13,7 @@ class PetDAO extends DAO<Pet> {
     super(_pet);
   }
 
-  async findPetsByOwnerId(id: string) {
+  async findByOwnerId(id: string) {
     return this.model.query().where("owner_id", id) as QueryBuilder<Pet>;
   }
 }
