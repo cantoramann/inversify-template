@@ -63,9 +63,11 @@ class CustomersController {
       }
 
       // retrieve all pets of customer
+      // todo: optimize on db level
       const pets = await this._petsService.findByOwnerId(customerId);
 
       // filter unique pet types
+      // todo: optimize on db level
       const set = new Set(pets);
       const uniquePets = Array.from(set);
 
