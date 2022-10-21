@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import Controller from "../CustomersController";
 import Service from "../../service/customers/CustomersService";
 import ApiError from "../../middleware/ApiError";
+import { v4 as uuidv4 } from "uuid";
 
 import PetsService from "../../service/pets/PetsService";
 import PurchasesService from "../../service/purchases/PurchasesService";
@@ -66,4 +67,35 @@ describe("src :: controller :: CustomersController", () => {
       });
     });
   });
+
+  describe("# applyGift", () => {
+    context("when there isn't an error", () => {
+      it("calls service.findById()", async () => {
+        // arrange
+        const customerId = uuidv4();
+        req = {
+          params: {
+            customerId
+          },
+        };
+        // act
+        await controller.applyGift(req as Request, res as Response, next);
+        // assert
+        sandbox.assert.calledOnce(service.findById);
+      });
+    });
+
+    context("when there is an error", () => {
+      it("calls next with ApiError.internal", async () => {
+        // arrange
+        service.findById.rejects(new Error("error"));
+        // act
+        await controller.applyGift(req as Request, res as Response, next);
+        // assert
+        sandbox.assert.calledOnce(next);
+        sandbox.assert.calledWith(next, sandbox.match.instanceOf(ApiError));
+      });
+    });
+  });
 });
+

@@ -8,4 +8,6 @@ const customersRouter = express.Router();
 
 customersRouter.get("/", controller.getAll);
 
+customersRouter.patch("/gift/:customerId", controller.applyGift);
+
 export default customersRouter;
