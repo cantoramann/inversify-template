@@ -5,11 +5,16 @@ import Controller from "../CustomersController";
 import Service from "../../service/customers/CustomersService";
 import ApiError from "../../middleware/ApiError";
 
+import PetsService from "../../service/pets/PetsService";
+import PurchasesService from "../../service/purchases/PurchasesService";
+
 const { expect } = chai;
 const sandbox = sinon.createSandbox();
 
 describe("src :: controller :: CustomersController", () => {
   let service: SinonStubbedInstance<Service>;
+  let petsService: SinonStubbedInstance<PetsService>;
+  let purchasesService: SinonStubbedInstance<PurchasesService>;
   let controller: Controller;
 
   let res: Partial<Response>;
@@ -18,9 +23,12 @@ describe("src :: controller :: CustomersController", () => {
 
   beforeEach(() => {
     service = sandbox.createStubInstance(Service);
+    petsService = sandbox.createStubInstance(PetsService);
+    purchasesService = sandbox.createStubInstance(PurchasesService); 
+    
     service.getAll = sandbox.stub();
 
-    controller = new Controller(service);
+    controller = new Controller(service, petsService, purchasesService);
 
     res = {
       status: sandbox.stub().returnsThis(),

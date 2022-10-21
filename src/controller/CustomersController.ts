@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { injectable } from "inversify";
 import Service from "../service/customers/CustomersService";
+import PetsService from "../service/pets/PetsService";
+import PurchasesService from "../service/purchases/PurchasesService";
 import ApiError from "../middleware/ApiError";
 
 @injectable()
 class CustomersController {
-  constructor(private readonly _service: Service) {
+  constructor(private readonly _service: Service, private readonly _petsService: PetsService, private readonly _purchasesService: PurchasesService) {
     this.getAll = this.getAll.bind(this);
   }
 
