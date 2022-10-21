@@ -1,6 +1,6 @@
 import chai from "chai";
 import sinon, { SinonStub } from "sinon";
-import DAO from "../purchases/PurchasesDAO";
+import DAO from "../pets/PetsDAO";
 import { v4 as uuidv4 } from "uuid";
 
 const { expect } = chai;
@@ -12,10 +12,10 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
-  findByCustomerId: SinonStub<any, Methods>;
+  findPetsByOwnerId: SinonStub<any, Methods>;
 }
 
-describe("src :: dao :: purchases :: PurchasesDAO", () => {
+describe("src :: dao :: pets :: PetsDAO", () => {
   let methods: Methods;
   let dao: DAO;
 
@@ -23,7 +23,7 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
-      findByCustomerId: sandbox.stub(),
+      findPetsByOwnerId: sandbox.stub(),
     };
 
     dao = new DAO(methods as any);
@@ -32,16 +32,16 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
   afterEach(() => {
     sandbox.reset();
   });
-
-  describe("# findByCustomerId", () => {
+  
+  describe("# findPetsByOwnerId", () => {
     it("returns an instance array", async () => {
       // arrange
       const id = uuidv4();
       methods.query.returnsThis();
-      methods.findByCustomerId.returnsThis();
+      methods.findPetsByOwnerId.returnsThis();
       methods.where.resolves([{ customerId: id }]);
       // act
-      const result = await dao.findByCustomerId(id);
+      const result = await dao.findPetsByOwnerId(id);
       // assert
       sandbox.assert.calledOnce(methods.where);
       sandbox.assert.calledOnce(methods.query);
