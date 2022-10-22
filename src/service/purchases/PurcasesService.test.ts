@@ -24,7 +24,7 @@ describe("src :: service :: purchases :: PurchasesService", () => {
     dao.truncate = sandbox.stub();
     dao.deleteById = sandbox.stub();
     dao.patchAndFetchById = sandbox.stub();
-    dao.findByCustomerId = sandbox.stub();
+    dao.findByCustomerIdAndDate = sandbox.stub();
 
     service = new Service(dao);
   });
@@ -34,15 +34,17 @@ describe("src :: service :: purchases :: PurchasesService", () => {
     sandbox.reset();
   });
   
-  describe("# findByCustomerId", () => {
+  describe("# findByCustomerIdAndDate", () => {
     it("calls DAOs query method", async () => {
       // arrange
       const id = uuidv4();
-      dao.findByCustomerId.resolves([]);
+      const dateFilter = new Date().toDateString();
+
+      dao.findByCustomerIdAndDate.resolves([]);
       // act
-      const result = await service.findByCustomerId(id);
+      const result = await service.findByCustomerIdAndDate(id, dateFilter);
       // assert
-      sandbox.assert.calledOnce(dao.findByCustomerId);
+      sandbox.assert.calledOnce(dao.findByCustomerIdAndDate);
       expect(result).to.deep.equal([]);
     });
   });

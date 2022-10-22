@@ -12,7 +12,7 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
-  findByCustomerId: SinonStub<any, Methods>;
+  findByCustomerIdAndDate: SinonStub<any, Methods>;
 }
 
 describe("src :: dao :: purchases :: PurchasesDAO", () => {
@@ -23,7 +23,7 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
-      findByCustomerId: sandbox.stub(),
+      findByCustomerIdAndDate: sandbox.stub(),
     };
 
     dao = new DAO(methods as any);
@@ -33,17 +33,21 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
     sandbox.reset();
   });
 
-  describe("# findByCustomerId", () => {
+  describe("# findByCustomerIdAndDate", () => {
     it("returns an instance array", async () => {
       // arrange
       const id = uuidv4();
+      const dateFilter = new Date().toDateString();
+
       methods.query.returnsThis();
-      methods.findByCustomerId.returnsThis();
-      methods.where.resolves([{ customerId: id }]);
+      methods.findByCustomerIdAndDate.returnsThis();
+      methods.where.onFirstCall().returnsThis();
+      methods.where.onSecondCall().resolves([{ customerId: id }]);
       // act
-      const result = await dao.findByCustomerId(id);
+      const result = await dao.findByCustomerIdAndDate(id, dateFilter);
+      console.log(result);
       // assert
-      sandbox.assert.calledOnce(methods.where);
+      sandbox.assert.calledTwice(methods.where);
       sandbox.assert.calledOnce(methods.query);
       expect(Array.isArray(result)).to.equal(true);
     });

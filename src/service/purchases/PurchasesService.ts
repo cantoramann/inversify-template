@@ -9,8 +9,8 @@ class PurchasesService extends Service<Purchase> {
     super(_purchasesDAO);
   }
 
-  async findByCustomerId(id: string) {
-    return this._purchasesDAO.findByCustomerId(id);
+  async findByCustomerIdAndDate(id: string, date: string) {
+    return this._purchasesDAO.findByCustomerIdAndDate(id, date);
   }
 }
 

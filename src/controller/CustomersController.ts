@@ -38,10 +38,9 @@ class CustomersController {
         });
 
       }
-      // intermediate arrange
+      // intermediate arrange for customer object prep
       const customerObj = customer?.$toDatabaseJson();
 
-      console.log(customerObj);
       // check if customer has an applied gift.
       if (customerObj.gift) {
         return res.status(200).json({
@@ -50,10 +49,16 @@ class CustomersController {
         });
       }
 
+      // intermediate arrange for date filter prep
+      let d = new Date();
+      d.setMonth(d.getMonth() - 6);
+      const dateFilter = d.toISOString();
+      console.log(dateFilter);
+
       // check if customer is eligible for a gift.
-      const allPurchases = await this._purchasesService.findByCustomerId(customerId);
+      const allPurchases = await this._purchasesService.findByCustomerIdAndDate(customerId, dateFilter);
       const eligiblePurchases = allPurchases.filter((purchase: any) => {
-        return new Date().getTime() - new Date(purchase.$toDatabaseJson().date).getTime() >= 1000 * 60 * 60 * 24 * 30;
+        return new Date().getTime() - new Date(purchase.date).getTime() >= 1000 * 60 * 60 * 24 * 30;
       });
       if (eligiblePurchases.length == 0) {
         return res.status(200).json({
@@ -63,11 +68,11 @@ class CustomersController {
       }
 
       // retrieve all pets of customer
-      // todo: optimize on db level
+      // todo: optimize in db level
       const pets = await this._petsService.findByOwnerId(customerId);
 
       // filter unique pet types
-      // todo: optimize on db level
+      // todo: optimize in db level
       const set = new Set(pets);
       const uniquePets = Array.from(set);
 
