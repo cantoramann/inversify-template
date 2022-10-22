@@ -13,7 +13,7 @@ class PurchaseDAO extends DAO<Purchase> {
   }
 
   async findByCustomerIdAndDate(id: string, date: string) {
-    return this.model.query().where("customer_id", id).where("date", "<", date) as QueryBuilder<Purchase>;
+    return this.model.query().select('id').where("customer_id", id).where("date", "<", date) as QueryBuilder<Purchase>;
   }
 }
 

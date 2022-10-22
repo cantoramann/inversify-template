@@ -12,6 +12,7 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
+  select: SinonStub<any, Methods>;
   findByCustomerIdAndDate: SinonStub<any, Methods>;
 }
 
@@ -23,6 +24,7 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
+      select: sandbox.stub(),
       findByCustomerIdAndDate: sandbox.stub(),
     };
 
@@ -39,8 +41,9 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
       const id = uuidv4();
       const dateFilter = new Date().toDateString();
 
-      methods.query.returnsThis();
       methods.findByCustomerIdAndDate.returnsThis();
+      methods.query.returnsThis();
+      methods.select.returnsThis();
       methods.where.onFirstCall().returnsThis();
       methods.where.onSecondCall().resolves([{ customerId: id }]);
       // act
