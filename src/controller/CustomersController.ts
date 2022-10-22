@@ -35,6 +35,7 @@ class CustomersController {
       const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
       if (!regexExp.test(customerId)) {
         return res.status(400).json({ 
+          code: 1,
           message: `Customer with id ${customerId} does not exist.`,
           ok: true
          });
@@ -44,6 +45,7 @@ class CustomersController {
       let customer : Customer | undefined = await this._service.findById(customerId);
       if (!customer) {
         return res.status(400).json({
+          code: 2,
           message: `Customer with id ${customerId} does not exist.`,
           ok: true
         });
@@ -55,6 +57,7 @@ class CustomersController {
       // check if customer has an applied gift.
       if (customerObj.gift) {
         return res.status(400).json({
+          code: 3,
           message: `Customer with id ${customerId} already has a gift applied.`,
           ok: true
         });
@@ -67,11 +70,9 @@ class CustomersController {
 
       // check if customer is eligible for a gift.
       const eligiblePurchases : Array<Purchase> | undefined = await this._purchasesService.findByCustomerIdAndDate(customerId, dateFilter);
-      // const eligiblePurchases = allPurchases.filter((purchase: any) => {
-      //   return new Date().getTime() - new Date(purchase.date).getTime() >= 1000 * 60 * 60 * 24 * 30;
-      // });
       if (eligiblePurchases.length == 0) {
         return res.status(400).json({
+          code: 4,
           message: `Customer with id ${customerId} is not eligible for a gift.`,
           ok: true
         });
@@ -79,7 +80,6 @@ class CustomersController {
 
       // retrieve all pets of customer
       const uniquePets : Array<Pet> | undefined  = await this._petsService.findDistinctTypesByOwnerId(customerId);
-      console.log(uniquePets);
 
       // deduce a random pet gift for customer
       const randomSpecies : string = uniquePets[Math.floor(Math.random() * uniquePets.length)].$toDatabaseJson().species;
@@ -89,6 +89,7 @@ class CustomersController {
 
       // return updated customer
       return res.status(200).json({
+        code: 0,
         message: `Customer with id ${customerId} has been updated with a gift.`,
         appliedGift: randomSpecies,
         ok: true
