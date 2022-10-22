@@ -24,7 +24,7 @@ describe("src :: service :: pets :: PetsService", () => {
     dao.truncate = sandbox.stub();
     dao.deleteById = sandbox.stub();
     dao.patchAndFetchById = sandbox.stub();
-    dao.findByOwnerId = sandbox.stub();
+    dao.findDistinctTypesByOwnerId = sandbox.stub();
 
     service = new Service(dao);
   });
@@ -33,15 +33,15 @@ describe("src :: service :: pets :: PetsService", () => {
     sandbox.restore();
     sandbox.reset();
   });
-  describe("# findByOwnerId", () => {
+  describe("# findDistinctTypesByOwnerId", () => {
     it("calls DAOs query method", async () => {
       // arrange
       const id = uuidv4();
-      dao.findByOwnerId.resolves([]);
+      dao.findDistinctTypesByOwnerId.resolves([]);
       // act
-      const result = await service.findByOwnerId(id);
+      const result = await service.findDistinctTypesByOwnerId(id);
       // assert
-      sandbox.assert.calledOnce(dao.findByOwnerId);
+      sandbox.assert.calledOnce(dao.findDistinctTypesByOwnerId);
       expect(result).to.deep.equal([]);
     });
   });

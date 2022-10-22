@@ -45,7 +45,6 @@ describe("src :: dao :: purchases :: PurchasesDAO", () => {
       methods.where.onSecondCall().resolves([{ customerId: id }]);
       // act
       const result = await dao.findByCustomerIdAndDate(id, dateFilter);
-      console.log(result);
       // assert
       sandbox.assert.calledTwice(methods.where);
       sandbox.assert.calledOnce(methods.query);

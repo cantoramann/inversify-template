@@ -38,7 +38,7 @@ class CustomersController {
         });
 
       }
-      // intermediate arrange for customer object prep
+      // convert customer to json
       const customerObj = customer?.$toDatabaseJson();
 
       // check if customer has an applied gift.
@@ -49,11 +49,10 @@ class CustomersController {
         });
       }
 
-      // intermediate arrange for date filter prep
+      // prepare the date for 6 months ago in UTC timezone. knexfile is set to UTC timezone.
       let d = new Date();
       d.setMonth(d.getMonth() - 6);
-      const dateFilter = d.toISOString();
-      console.log(dateFilter);
+      const dateFilter = d.toISOString(); 
 
       // check if customer is eligible for a gift.
       const allPurchases = await this._purchasesService.findByCustomerIdAndDate(customerId, dateFilter);
@@ -68,13 +67,7 @@ class CustomersController {
       }
 
       // retrieve all pets of customer
-      // todo: optimize in db level
-      const pets = await this._petsService.findByOwnerId(customerId);
-
-      // filter unique pet types
-      // todo: optimize in db level
-      const set = new Set(pets);
-      const uniquePets = Array.from(set);
+      const uniquePets = await this._petsService.findDistinctTypesByOwnerId(customerId);
 
       // deduce a random pet gift for customer
       const randomSpecies = uniquePets[Math.floor(Math.random() * uniquePets.length)].$toDatabaseJson().species;
@@ -85,7 +78,7 @@ class CustomersController {
       // return updated customer
       return res.status(200).json({
         message: `Customer with id ${customerId} has been updated with a gift.`,
-        appliedGift: customer.$toDatabaseJson().gift,
+        appliedGift: customerObj.gift,
         ok: true
       });
 

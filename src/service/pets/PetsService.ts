@@ -9,8 +9,8 @@ class PetsService extends Service<Pet> {
     super(_petsDAO);
   }
 
-  async findByOwnerId(id: string) {
-    return this._petsDAO.findByOwnerId(id);
+  async findDistinctTypesByOwnerId(id: string) {
+    return this._petsDAO.findDistinctTypesByOwnerId(id);
   }
 }
 

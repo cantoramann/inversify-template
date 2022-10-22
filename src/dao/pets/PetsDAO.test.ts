@@ -12,7 +12,8 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
-  findByOwnerId: SinonStub<any, Methods>;
+  distinct: SinonStub<any, Methods>;
+  findDistinctTypesByOwnerId: SinonStub<any, Methods>;
 }
 
 describe("src :: dao :: pets :: PetsDAO", () => {
@@ -23,7 +24,8 @@ describe("src :: dao :: pets :: PetsDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
-      findByOwnerId: sandbox.stub(),
+      distinct: sandbox.stub(),
+      findDistinctTypesByOwnerId: sandbox.stub(),
     };
 
     dao = new DAO(methods as any);
@@ -33,15 +35,16 @@ describe("src :: dao :: pets :: PetsDAO", () => {
     sandbox.reset();
   });
   
-  describe("# findByOwnerId", () => {
+  describe("# findDistinctTypesByOwnerId", () => {
     it("returns an instance array", async () => {
       // arrange
       const id = uuidv4();
       methods.query.returnsThis();
-      methods.findByOwnerId.returnsThis();
+      methods.findDistinctTypesByOwnerId.returnsThis();
+      methods.distinct.returnsThis();
       methods.where.resolves([{ customerId: id }]);
       // act
-      const result = await dao.findByOwnerId(id);
+      const result = await dao.findDistinctTypesByOwnerId(id);
       // assert
       sandbox.assert.calledOnce(methods.where);
       sandbox.assert.calledOnce(methods.query);
