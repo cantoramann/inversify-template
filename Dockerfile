@@ -14,7 +14,7 @@ COPY yarn.lock ./
 
 RUN yarn --frozen-lock
 
-RUN yarn build
+# RUN yarn build
 
 COPY ./ ./
 

@@ -12,6 +12,8 @@ const knexFile = {
     port: config.db.port,
     password: config.db.password,
     database: config.db.name,
+    timezone: 'UTC' // https://github.com/Vincit/objection.js/issues/434
+
   },
   pool: {
     min: 0,

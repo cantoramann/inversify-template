@@ -8,6 +8,10 @@ class PetsService extends Service<Pet> {
   constructor(protected readonly _petsDAO: PetsDAO) {
     super(_petsDAO);
   }
+
+  async findDistinctTypesByOwnerId(id: string) {
+    return this._petsDAO.findDistinctTypesByOwnerId(id);
+  }
 }
 
 export default PetsService;

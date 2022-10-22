@@ -42,7 +42,7 @@ export const seed = async (knex: Knex) => {
     purchases.push({
       id: uuidv4(),
       customerId: faker.helpers.arrayElement(customers).id,
-      date: faker.date.past(),
+      date: faker.date.past(), // 2021-12-03T05:40:44.408Z format
       total: faker.commerce.price(),
     });
   }
