@@ -31,7 +31,7 @@ class CustomersController {
       // arrange
       const { customerId = "<no id provided>" } = req.params;
 
-      // check regex
+      // validate incoming id format
       const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
       if (!regexExp.test(customerId)) {
         return res.status(400).json({ 
