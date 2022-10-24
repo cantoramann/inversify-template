@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import Service from "../service/customers/CustomersService";
 import PetsService from "../service/pets/PetsService";
 import PurchasesService from "../service/purchases/PurchasesService";
+import GiftsService from "../service/gifts/GiftsService";
 import ApiError from "../middleware/ApiError";
 import Purchase from "../model/Purchase";
 import Customer from "../model/Customer";
@@ -11,7 +12,7 @@ import Pet from "../model/Pet";
 @injectable()
 class CustomersController {
   constructor(private readonly _service: Service, private readonly _petsService: PetsService, 
-    private readonly _purchasesService: PurchasesService) {
+    private readonly _purchasesService: PurchasesService, private readonly _giftsService: GiftsService) {
     this.getAll = this.getAll.bind(this);
     this.applyGift = this.applyGift.bind(this);
   }
@@ -49,13 +50,11 @@ class CustomersController {
           message: `Customer with id ${customerId} does not exist.`,
           ok: true
         });
-
       }
-      // convert customer to json
       const customerObj = customer?.$toDatabaseJson();
 
       // check if customer has an applied gift.
-      if (customerObj.gift) {
+      if (customerObj.giftId) {
         return res.status(400).json({
           code: 3,
           message: `Customer with id ${customerId} already has a gift applied.`,
@@ -78,20 +77,23 @@ class CustomersController {
         });
       }
 
-      // retrieve all pets of customer
+      // retrieve all unique pets of customer - customer should always have pets as immutability is guaranteed.
       const uniquePets : Array<Pet> | undefined  = await this._petsService.findDistinctTypesByOwnerId(customerId);
 
-      // deduce a random pet gift for customer
-      const randomSpecies : string = uniquePets[Math.floor(Math.random() * uniquePets.length)].$toDatabaseJson().species;
+      // choose a random pet gift for customer
+      const randomPet = uniquePets[Math.floor(Math.random() * uniquePets.length)].$toDatabaseJson();
 
-      // update customer column with gift
-      customer = await this._service.patchAndFetchById(customerId, { gift: randomSpecies });
+      // insert gift entry and update customer column with gift id
+      let appliedGift : any = await this._giftsService.insert({ ownerId: customerId, petId: randomPet.id });
+      appliedGift = appliedGift.$toDatabaseJson();
+      customer = await this._service.patchAndFetchById(customerId, { giftId: appliedGift.id });
 
       // return updated customer
       return res.status(200).json({
         code: 0,
         message: `Customer with id ${customerId} has been updated with a gift.`,
-        appliedGift: randomSpecies,
+        appliedGiftTo: randomPet.id,
+        petSpecies: randomPet.species,
         ok: true
       });
 

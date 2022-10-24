@@ -1,10 +1,11 @@
 import { Model } from "objection";
 import Customer from "./Customer";
-import Gift from "./Gift";
-class Pet extends Model {
+import Pet from "./Pet";
+
+class Gift extends Model {
   // Table name is the only required property.
   static get tableName() {
-    return "pets";
+    return "gifts";
   }
 
   // Optional JSON schema. This is not the database schema!
@@ -15,12 +16,13 @@ class Pet extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["ownerId", "name"],
+      required: ["ownerId", "petId", "isClaimed"],
 
       properties: {
         id: { type: "string" },
-        name: { type: "string", minLength: 1, maxLength: 255 },
         ownerId: { type: "string" },
+        petId: { type: "string" },
+        isClaimed: { type: "boolean", default: false },
       },
     };
   }
@@ -28,25 +30,24 @@ class Pet extends Model {
   // This object defines the relations to other models.
   static get relationMappings() {
     return {
-      owners: {
+      owner: {
         relation: Model.BelongsToOneRelation,
         modelClass: Customer,
         join: {
-          from: "pets.ownerId",
+          from: "gifts.ownerId",
           to: "customers.id",
         },
       },
-
-      gift: {
-        relation: Model.HasOneRelation,
-        modelClass: Gift,
+      pet: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Pet,
         join: {
-          from: "pets.id",
-          to: "gifts.petId",
+          from: "gifts.petId",
+          to: "pets.id",
         },
       }
     };
   }
 }
 
-export default Pet;
+export default Gift;

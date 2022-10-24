@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import PetsService from "../../service/pets/PetsService";
 import PurchasesService from "../../service/purchases/PurchasesService";
+import GiftsService from "../../service/gifts/GiftsService";
 
 const { expect } = chai;
 const sandbox = sinon.createSandbox();
@@ -16,6 +17,7 @@ describe("src :: controller :: CustomersController", () => {
   let service: SinonStubbedInstance<Service>;
   let petsService: SinonStubbedInstance<PetsService>;
   let purchasesService: SinonStubbedInstance<PurchasesService>;
+  let giftsService: SinonStubbedInstance<GiftsService>;
   let controller: Controller;
 
   let res: Partial<Response>;
@@ -26,10 +28,11 @@ describe("src :: controller :: CustomersController", () => {
     service = sandbox.createStubInstance(Service);
     petsService = sandbox.createStubInstance(PetsService);
     purchasesService = sandbox.createStubInstance(PurchasesService); 
+    giftsService = sandbox.createStubInstance(GiftsService);
     
     service.getAll = sandbox.stub();
 
-    controller = new Controller(service, petsService, purchasesService);
+    controller = new Controller(service, petsService, purchasesService, giftsService);
 
     res = {
       status: sandbox.stub().returnsThis(),

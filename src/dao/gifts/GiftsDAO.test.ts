@@ -1,6 +1,6 @@
 import chai from "chai";
 import sinon, { SinonStub } from "sinon";
-import DAO from "../pets/PetsDAO";
+import DAO from "../gifts/GiftsDAO";
 import { v4 as uuidv4 } from "uuid";
 
 const { expect } = chai;
@@ -12,12 +12,11 @@ const sandbox = sinon.createSandbox();
 interface Methods {
   query: SinonStub<any, Methods>;
   where: SinonStub<any, Methods>;
-  distinct: SinonStub<any, Methods>;
-  select: SinonStub<any, Methods>;
-  findDistinctTypesByOwnerId: SinonStub<any, Methods>;
+  findByOwnerId: SinonStub<any, Methods>;
+  first: SinonStub<any, Methods>;
 }
 
-describe("src :: dao :: pets :: PetsDAO", () => {
+describe("src :: dao :: gifts :: GiftsDAO", () => {
   let methods: Methods;
   let dao: DAO;
 
@@ -25,9 +24,8 @@ describe("src :: dao :: pets :: PetsDAO", () => {
     methods = {
       query: sandbox.stub(),
       where: sandbox.stub(),
-      distinct: sandbox.stub(),
-      select: sandbox.stub(),
-      findDistinctTypesByOwnerId: sandbox.stub(),
+      findByOwnerId: sandbox.stub(),
+      first: sandbox.stub(),
     };
 
     dao = new DAO(methods as any);
@@ -36,22 +34,24 @@ describe("src :: dao :: pets :: PetsDAO", () => {
   afterEach(() => {
     sandbox.reset();
   });
-  
-  describe("# findDistinctTypesByOwnerId", () => {
+
+  describe("# findByOwnerId", () => {
     it("returns an instance array", async () => {
       // arrange
       const id = uuidv4();
+
+      methods.findByOwnerId.returnsThis();
       methods.query.returnsThis();
-      methods.findDistinctTypesByOwnerId.returnsThis();
-      methods.select.returnsThis();
-      methods.distinct.returnsThis();
-      methods.where.resolves([{ customerId: id }]);
+      methods.where.onFirstCall().returnsThis();
+      methods.where.onSecondCall().returnsThis();
+      methods.first.resolves([{ ownerId: id, isClaimed: false }])
+
       // act
-      const result = await dao.findDistinctTypesByOwnerId(id);
+      const result = await dao.findByOwnerId(id);
       // assert
-      sandbox.assert.calledOnce(methods.where);
+      sandbox.assert.calledTwice(methods.where);
       sandbox.assert.calledOnce(methods.query);
-      expect(Array.isArray(result)).to.equal(true);
+      expect(typeof result == "object").to.be.true;
     });
   });
 });
